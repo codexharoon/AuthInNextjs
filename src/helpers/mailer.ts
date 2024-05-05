@@ -13,18 +13,31 @@ var transporter = nodemailer.createTransport({
 
 export const sendMail = async ({ type, email, id }: any) => {
   try {
-    const user = await User.findById(id);
-
-    if (!user) {
-      return;
-    }
-
     const token = await bcryptjs.hash(email, 10);
 
-    user.isVerifiedToken = token;
-    user.isVerifiedTokenExpiry = new Date(Date.now() + 3600000);
+    if (type === "VERIFY") {
+      const user = await User.findByIdAndUpdate(id, {
+        isVerifiedToken: token,
+        isVerifiedTokenExpiry: Date.now() + 3600000,
+      });
 
-    await user.save();
+      if (!user) {
+        return;
+      }
+
+      await user.save();
+    } else if (type === "RESET") {
+      const user = await User.findByIdAndUpdate(id, {
+        forgotPasswordToken: token,
+        forgotPasswordTokenExpiry: Date.now() + 3600000,
+      });
+
+      if (!user) {
+        return;
+      }
+
+      await user.save();
+    }
 
     const info = await transporter.sendMail({
       from: "info@codexharoon.com", // sender address
