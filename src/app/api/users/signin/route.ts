@@ -30,7 +30,10 @@ export async function POST(req: NextRequest) {
       success: true,
     });
 
-    res.cookies.set("token", token);
+    res.cookies.set("token", token, {
+      httpOnly: true,
+      secure: true,
+    });
 
     return res;
   } catch (error: any) {

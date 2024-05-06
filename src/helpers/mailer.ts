@@ -1,6 +1,9 @@
 import nodemailer from "nodemailer";
 import User from "@/models/usermodel";
 import bcryptjs from "bcryptjs";
+import { connectDB } from "@/helpers/dbConfig";
+
+connectDB();
 
 var transporter = nodemailer.createTransport({
   host: "sandbox.smtp.mailtrap.io",

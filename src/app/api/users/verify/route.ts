@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import User from "@/models/usermodel";
+import { connectDB } from "@/helpers/dbConfig";
+
+connectDB();
 
 export async function POST(req: NextRequest) {
   try {
@@ -26,6 +29,9 @@ export async function POST(req: NextRequest) {
     }
 
     user.isVerified = true;
+
+    user.isVerifiedToken = undefined;
+    user.isVerifiedTokenExpiry = undefined;
     await user.save();
 
     return NextResponse.json({ message: "User verified successfully" });
